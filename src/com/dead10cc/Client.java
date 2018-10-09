@@ -6,6 +6,7 @@ public class Client implements Runnable{
     private String id;
     private HashMap<Integer, Share> shareInventory;
     private Integer wallet;
+    private boolean wantsToTrade;
 
 
     public Client(HashMap<Integer, Share> shareInventory, Integer wallet) {
@@ -17,6 +18,10 @@ public class Client implements Runnable{
     @Override
     public void run() {
         // TODO: this will run until the client runs out of money or decides to quit (by small random chance)
+        while (wantsToTrade) {
+            //read history
+            //decide trade
+        }
     }
 
     public void changeWalletBalanceBy(int amount) {

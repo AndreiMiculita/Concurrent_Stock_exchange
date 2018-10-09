@@ -21,6 +21,8 @@ public class StockMarketServer {
     }
 
     public void startSimulation() {
-        // TODO: run monitor thread, then run client threads and wait for them to finish
+        // TODO: run monitor thread, then run client threads
+        // check offerSet and demandSet and if matches are found, make transactions
+        // wait for them to finish
     }
 }
