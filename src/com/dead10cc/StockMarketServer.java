@@ -3,26 +3,37 @@ package com.dead10cc;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class StockMarketServer {
+class StockMarketServer {
 
-    Monitor monitor;
+    private Monitor monitor = new Monitor();
 
-    ArrayList<Transaction> transactionHistory;
+    private ArrayList<Transaction> transactionHistory;
 
-    ArrayList <Client> clientList;
+    private ArrayList <Thread> threadList = new ArrayList<>();
 
-    ConcurrentLinkedQueue<Offer> offerSet;
-    ConcurrentLinkedQueue<Demand> demandSet;
+    private ConcurrentLinkedQueue<Offer> offerSet;
+    private ConcurrentLinkedQueue<Demand> demandSet;
 
 
 
-    public StockMarketServer() {
+    StockMarketServer() {
         // here we will add the clients
+        ArrayList<Client> clientList = new ArrayList<>();
+        clientList.add(new Client());
+        clientList.add(new Client());
+        clientList.add(new Client());
+        threadList.add(new Thread(monitor));
+        for (Client c : clientList){
+            threadList.add(new Thread(c));
+        }
     }
 
-    public void startSimulation() {
+    void startSimulation() {
         // TODO: run monitor thread, then run client threads
         // check offerSet and demandSet and if matches are found, make transactions
         // wait for them to finish
+        for (Thread t: threadList) {
+            t.start();
+        }
     }
 }
