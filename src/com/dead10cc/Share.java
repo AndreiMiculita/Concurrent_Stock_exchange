@@ -1,7 +1,7 @@
 package com.dead10cc;
 
 public class Share {
-    private String id;
+    private final String id;
 
     public Share(String id) {
         this.id = id;

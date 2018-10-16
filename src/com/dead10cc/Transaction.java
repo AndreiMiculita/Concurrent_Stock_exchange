@@ -1,6 +1,6 @@
 package com.dead10cc;
 
-public class Transaction {
+class Transaction {
     private String buyer;
     private Share shareType;
     private int price;

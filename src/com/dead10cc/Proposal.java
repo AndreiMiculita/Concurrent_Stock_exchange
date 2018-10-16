@@ -6,7 +6,7 @@ abstract class Proposal {
     private Share shareType;
     private int amount;
 
-    protected Proposal(int price, Share shareType, int amount) {
+    Proposal(int price, Share shareType, int amount) {
         this.price = price;
         this.shareType = shareType;
         this.amount = amount;

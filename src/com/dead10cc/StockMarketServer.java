@@ -5,35 +5,40 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 class StockMarketServer {
 
-    private Monitor monitor = new Monitor();
-
+    private final ArrayList<Thread> threadList = new ArrayList<>();
     private ArrayList<Transaction> transactionHistory;
-
-    private ArrayList <Thread> threadList = new ArrayList<>();
-
     private ConcurrentLinkedQueue<Offer> offerSet;
     private ConcurrentLinkedQueue<Demand> demandSet;
 
 
-
-    StockMarketServer() {
-        // here we will add the clients
+    StockMarketServer(int numberOfClients) {
+        // here we will add the reporter and the clients
         ArrayList<Client> clientList = new ArrayList<>();
-        clientList.add(new Client());
-        clientList.add(new Client());
-        clientList.add(new Client());
-        threadList.add(new Thread(monitor));
-        for (Client c : clientList){
+        for (int i = 0; i < numberOfClients; i++) {
+            clientList.add(new Client());
+            System.out.println("client is alive and wants to trade");
+        }
+        Reporter reporter = new Reporter();
+        threadList.add(new Thread(reporter));
+        for (Client c : clientList) {
             threadList.add(new Thread(c));
+            System.out.println("client is alive and wants to trade");
         }
     }
 
     void startSimulation() {
-        // TODO: run monitor thread, then run client threads
+        // run all threads
         // check offerSet and demandSet and if matches are found, make transactions
         // wait for them to finish
-        for (Thread t: threadList) {
+        for (Thread t : threadList) {
             t.start();
+        }
+        for (Thread t : threadList) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

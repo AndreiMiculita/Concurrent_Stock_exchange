@@ -2,10 +2,13 @@ package com.dead10cc;
 
 import java.util.HashMap;
 
-public class Client implements Runnable{
+/**
+ * The Client is a thread representing an actor on the stock exchange, who can buy and sell shares.
+ */
+class Client implements Runnable {
     private static int counter; //counts the number of instances
-    private String id;
-    private HashMap<Share, Integer> shareInventory;
+    private final String id;
+    private final HashMap<Share, Integer> shareInventory;
     private int wallet;
     private boolean wantsToTrade;
 
@@ -43,11 +46,11 @@ public class Client implements Runnable{
         }
     }
 
-    private void addSharesToInventory(Share shareType, int amount){
+    private void addSharesToInventory(Share shareType, int amount) {
         shareInventory.put(shareType, shareInventory.getOrDefault(shareType, 0) + amount);
     }
 
-    private void removeSharesFromInventory(int amount, Share shareType){
+    private void removeSharesFromInventory(int amount, Share shareType) {
 
     }
 

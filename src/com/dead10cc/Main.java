@@ -1,9 +1,9 @@
 package com.dead10cc;
 
-public class Main {
+class Main {
 
     public static void main(String[] args) {
-        StockMarketServer s = new StockMarketServer();
+        StockMarketServer s = new StockMarketServer(3);
         s.startSimulation();
     }
 }
