@@ -1,6 +1,6 @@
 package com.dead10cc;
 
-class Demand extends Proposal {
+class Demand extends Transaction {
 
     private final Buyer buyer;
     Demand(Buyer buyer, int price, Share shareType, int amount) {

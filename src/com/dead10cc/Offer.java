@@ -1,6 +1,6 @@
 package com.dead10cc;
 
-class Offer extends Proposal {
+class Offer extends Transaction {
 
     private final Seller seller;
     Offer(Seller seller, int price, Share shareType, int amount) {

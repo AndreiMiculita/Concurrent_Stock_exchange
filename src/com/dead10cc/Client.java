@@ -15,11 +15,11 @@ class Client implements Runnable, Seller, Buyer {
     private boolean wantsToTrade;
 
     // References to the shared lists of proposals
-    private final ConcurrentProposalList<Offer> offerList;
-    private final ConcurrentProposalList<Demand> demandList;
-    private final ConcurrentProposalList<Transaction> transactionHistory;
+    private final ConcurrentTransactionList<Offer> offerList;
+    private final ConcurrentTransactionList<Demand> demandList;
+    private final ConcurrentTransactionList<CompletedTransaction> transactionHistory;
 
-    Client(ConcurrentProposalList<Offer> offerList, ConcurrentProposalList<Demand> demandList, ConcurrentProposalList<Transaction> transactionHistory) {
+    Client(ConcurrentTransactionList<Offer> offerList, ConcurrentTransactionList<Demand> demandList, ConcurrentTransactionList<CompletedTransaction> transactionHistory) {
         this.shareInventory = new HashMap<>();
         this.wallet = 0;
         this.offerList = offerList;
@@ -116,7 +116,7 @@ class Client implements Runnable, Seller, Buyer {
         // the other party gains money
         o.getSeller().increaseWalletBalanceBy(o.getPrice() * o.getAmount());
 
-        Transaction t = new Transaction(this, o.getPrice(), o.getShareType(), o.getAmount(), o.getSeller());
+        CompletedTransaction t = new CompletedTransaction(this, o.getPrice(), o.getShareType(), o.getAmount(), o.getSeller());
         transactionHistory.add(t);
     }
 
@@ -134,7 +134,7 @@ class Client implements Runnable, Seller, Buyer {
         // the other party gains shares
         d.getBuyer().addSharesToInventory(d.getShareType(), d.getAmount());
 
-        Transaction t = new Transaction(d.getBuyer(), d.getPrice(), d.getShareType(), d.getAmount(), this);
+        CompletedTransaction t = new CompletedTransaction(d.getBuyer(), d.getPrice(), d.getShareType(), d.getAmount(), this);
         transactionHistory.add(t);
     }
 }

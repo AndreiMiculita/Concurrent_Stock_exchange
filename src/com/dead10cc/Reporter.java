@@ -6,9 +6,9 @@ package com.dead10cc;
 class Reporter implements Runnable {
 
     private boolean reporterActive;
-    private final ConcurrentProposalList<Transaction> transactionHistory;
+    private final ConcurrentTransactionList<CompletedTransaction> transactionHistory;
 
-    Reporter(ConcurrentProposalList<Transaction> transactionHistory) {
+    Reporter(ConcurrentTransactionList<CompletedTransaction> transactionHistory) {
         this.transactionHistory = transactionHistory;
     }
 

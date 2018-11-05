@@ -8,9 +8,9 @@ class StockMarketServer {
     private final ArrayList<Thread> threadList = new ArrayList<>();
 
     StockMarketServer(int numberOfClients) {
-        ConcurrentProposalList<Offer> offerList = new ConcurrentProposalList<>(new CopyOnWriteArrayList<>());
-        ConcurrentProposalList<Demand> demandList = new ConcurrentProposalList<>(new CopyOnWriteArrayList<>());
-        ConcurrentProposalList<Transaction> transactionHistory = new ConcurrentProposalList<>(new CopyOnWriteArrayList<>());
+        ConcurrentTransactionList<Offer> offerList = new ConcurrentTransactionList<>(new CopyOnWriteArrayList<>());
+        ConcurrentTransactionList<Demand> demandList = new ConcurrentTransactionList<>(new CopyOnWriteArrayList<>());
+        ConcurrentTransactionList<CompletedTransaction> transactionHistory = new ConcurrentTransactionList<>(new CopyOnWriteArrayList<>());
         // here we will add the reporter and the clients
         ArrayList<Client> clientList = new ArrayList<>();
         for (int i = 0; i < numberOfClients; i++) {

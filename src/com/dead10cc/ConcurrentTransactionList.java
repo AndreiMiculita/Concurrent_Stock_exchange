@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @ThreadSafe
-class ConcurrentProposalList<T extends Proposal> {
+class ConcurrentTransactionList<T extends Transaction> {
     @GuardedBy("this")
     private final CopyOnWriteArrayList<T> myList;
     private final List<T> unmodifiableList;
 
-    ConcurrentProposalList(CopyOnWriteArrayList<T> set) {
+    ConcurrentTransactionList(CopyOnWriteArrayList<T> set) {
         myList = set;
         unmodifiableList = Collections.unmodifiableList(myList);
     }
@@ -26,9 +26,9 @@ class ConcurrentProposalList<T extends Proposal> {
         return unmodifiableList;
     }
 
-    synchronized void remove(Proposal proposal){
+    synchronized void remove(Transaction transaction){
         for (T p : myList) {
-            if (p.equals(proposal)) myList.remove(p);
+            if (p.equals(transaction)) myList.remove(p);
         }
     }
 }

@@ -3,24 +3,24 @@ package com.dead10cc;
 import net.jcip.annotations.Immutable;
 
 @Immutable
-/*
-  A Transaction is a completed proposal
- */
-class Transaction extends Proposal {
-    private final String buyerId;
-    private final String sellerId;
+abstract class Transaction {
+    private final int price;
+    private final Share shareType;
+    private final int amount;
 
-    Transaction(Buyer buyer, int price, Share shareType, int amount, Seller seller) {
-        super(price, shareType, amount);
-        this.buyerId = buyer.getId();
-        this.sellerId = seller.getId();
+    Transaction(int price, Share shareType, int amount) {
+        this.price = price;
+        this.shareType = shareType;
+        this.amount = amount;
     }
 
-    public String getSellerId() {
-        return sellerId;
+    int getPrice() {
+        return price;
     }
-
-    public String getBuyerId() {
-        return buyerId;
+    Share getShareType() {
+        return shareType;
+    }
+    int getAmount() {
+        return amount;
     }
 }
