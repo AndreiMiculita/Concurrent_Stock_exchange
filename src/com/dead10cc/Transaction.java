@@ -1,13 +1,16 @@
 package com.dead10cc;
 
-class Transaction {
-    private String buyer;
-    private Share shareType;
-    private int price;
-    private int amount;
-    private String seller;
+import net.jcip.annotations.Immutable;
 
-    public Transaction(String buyer, Share shareType, int price, int amount, String seller) {
+@Immutable
+class Transaction {
+    private final Client buyer;
+    private final Share shareType;
+    private final int price;
+    private final int amount;
+    private final Client seller;
+
+    public Transaction(Client buyer, Share shareType, int price, int amount, Client seller) {
         this.buyer = buyer;
         this.shareType = shareType;
         this.price = price;
@@ -15,43 +18,23 @@ class Transaction {
         this.seller = seller;
     }
 
-    public String getBuyer() {
+    public Client getBuyer() {
         return buyer;
-    }
-
-    public void setBuyer(String buyer) {
-        this.buyer = buyer;
     }
 
     public Share getShareType() {
         return shareType;
     }
 
-    public void setShareType(Share shareType) {
-        this.shareType = shareType;
-    }
-
     public int getPrice() {
         return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
     }
 
     public int getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public String getSeller() {
+    public Client getSeller() {
         return seller;
-    }
-
-    public void setSeller(String seller) {
-        this.seller = seller;
     }
 }

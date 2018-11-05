@@ -1,21 +1,23 @@
 package com.dead10cc;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 class StockMarketServer {
 
     private final ArrayList<Thread> threadList = new ArrayList<>();
     private ArrayList<Transaction> transactionHistory;
-    private ConcurrentLinkedQueue<Offer> offerSet;
-    private ConcurrentLinkedQueue<Demand> demandSet;
+    private HashSet<String> companies; //will be queried by Clients
 
 
     StockMarketServer(int numberOfClients) {
         // here we will add the reporter and the clients
         ArrayList<Client> clientList = new ArrayList<>();
         for (int i = 0; i < numberOfClients; i++) {
-            clientList.add(new Client());
+            ConcurrentProposalList<Offer> offerList = new ConcurrentProposalList<>(new CopyOnWriteArrayList<>());
+            ConcurrentProposalList<Demand> demandList = new ConcurrentProposalList<>(new CopyOnWriteArrayList<>());
+            clientList.add(new Client(offerList, demandList));
             System.out.println("client is alive and wants to trade");
         }
         Reporter reporter = new Reporter();
@@ -28,7 +30,7 @@ class StockMarketServer {
 
     void startSimulation() {
         // run all threads
-        // check offerSet and demandSet and if matches are found, make transactions
+        // check offerList and demandList and if matches are found, make transactions
         // wait for them to finish
         for (Thread t : threadList) {
             t.start();
