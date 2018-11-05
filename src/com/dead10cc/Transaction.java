@@ -4,23 +4,20 @@ import net.jcip.annotations.Immutable;
 
 @Immutable
 class Transaction {
-    private final Client buyer;
+    private final String buyerId;
     private final Share shareType;
     private final int price;
     private final int amount;
-    private final Client seller;
+    private final String sellerId;
 
-    public Transaction(Client buyer, Share shareType, int price, int amount, Client seller) {
-        this.buyer = buyer;
+    public Transaction(Buyer buyer, Share shareType, int price, int amount, Seller seller) {
+        this.buyerId = buyer.getId();
         this.shareType = shareType;
         this.price = price;
         this.amount = amount;
-        this.seller = seller;
+        this.sellerId = seller.getId();
     }
 
-    public Client getBuyer() {
-        return buyer;
-    }
 
     public Share getShareType() {
         return shareType;
@@ -34,7 +31,12 @@ class Transaction {
         return amount;
     }
 
-    public Client getSeller() {
-        return seller;
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public String getBuyerId() {
+        return buyerId;
     }
 }

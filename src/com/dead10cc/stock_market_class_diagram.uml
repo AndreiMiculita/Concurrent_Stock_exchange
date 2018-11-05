@@ -3,108 +3,191 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="766.1506944444445" y="412.0">com.dead10cc.Monitor</node>
-    <node x="480.3184027777778" y="435.0">com.dead10cc.Offer</node>
-    <node x="363.74895833333335" y="158.0">com.dead10cc.Proposal</node>
-    <node x="259.3184027777778" y="435.0">com.dead10cc.Demand</node>
-    <node x="607.1506944444445" y="146.5">com.dead10cc.Transaction</node>
-    <node x="0.0" y="100.0">com.dead10cc.Client</node>
-    <node x="428.2350694444445" y="0.0">com.dead10cc.Share</node>
-    <node x="403.49895833333335" y="561.0">com.dead10cc.StockMarketServer</node>
+    <node x="848.75" y="437.0">com.dead10cc.Offer</node>
+    <node x="150.75" y="401.5">com.dead10cc.ConcurrentProposalList</node>
+    <node x="460.25" y="437.0">com.dead10cc.Demand</node>
+    <node x="446.75" y="192.0">com.dead10cc.Proposal</node>
+    <node x="0.0" y="774.5">com.dead10cc.Reporter</node>
+    <node x="1062.1333333333334" y="391.0">com.dead10cc.Transaction</node>
+    <node x="579.4642857142858" y="636.0">com.dead10cc.Client</node>
+    <node x="511.2547839506173" y="0.0">com.dead10cc.Share</node>
+    <node x="614.75" y="215.0">com.dead10cc.Buyer</node>
+    <node x="918.75" y="215.0">com.dead10cc.Seller</node>
+    <node x="389.375" y="1279.0">com.dead10cc.Main</node>
+    <node x="322.875" y="1106.0">com.dead10cc.StockMarketServer</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="com.dead10cc.Offer" target="com.dead10cc.Proposal">
-      <point x="0.0" y="-26.5" />
-      <point x="571.3184027777778" y="387.0" />
-      <point x="540.4989583333333" y="387.0" />
-      <point x="75.75" y="73.0" />
-    </edge>
-    <edge source="com.dead10cc.Client" target="com.dead10cc.Share">
-      <point x="-80.0" y="-131.0" />
-      <point x="80.0" y="50.0" />
-      <point x="433.2975694444445" y="50.0" />
-      <point x="-35.4375" y="15.0" />
-    </edge>
-    <edge source="com.dead10cc.StockMarketServer" target="com.dead10cc.Transaction">
-      <point x="66.79999999999995" y="-96.5" />
-      <point x="637.2989583333333" y="531.0" />
-      <point x="755.6506944444445" y="531.0" />
-      <point x="0.0" y="84.5" />
-    </edge>
     <edge source="com.dead10cc.Transaction" target="com.dead10cc.Share">
-      <point x="-74.25" y="-84.5" />
-      <point x="681.4006944444445" y="60.0" />
-      <point x="494.0475694444445" y="60.0" />
-      <point x="25.3125" y="15.0" />
+      <point x="36.999999999999886" y="-72.5" />
+      <point x="1173.1333333333332" y="371.0" />
+      <point x="1188.25" y="371.0" />
+      <point x="1188.25" y="152.0" />
+      <point x="599.5881172839506" y="152.0" />
+      <point x="35.333333333333314" y="61.0" />
     </edge>
-    <edge source="com.dead10cc.Offer" target="com.dead10cc.Share">
-      <point x="60.66666666666667" y="-26.5" />
-      <point x="631.9850694444444" y="387.0" />
-      <point x="596.6506944444445" y="387.0" />
-      <point x="596.6506944444445" y="70.0" />
-      <point x="483.9225694444445" y="70.0" />
-      <point x="15.1875" y="15.0" />
+    <edge source="com.dead10cc.Client" target="com.dead10cc.Offer">
+      <point x="58.928571428571445" y="-200.0" />
+      <point x="803.3928571428572" y="566.0" />
+      <point x="893.375" y="566.0" />
+      <point x="-14.875" y="26.5" />
     </edge>
-    <edge source="com.dead10cc.Proposal" target="com.dead10cc.Share">
-      <point x="-50.5" y="-73.0" />
-      <point x="414.24895833333335" y="80.0" />
-      <point x="463.6725694444445" y="80.0" />
-      <point x="-5.0625" y="15.0" />
-    </edge>
-    <edge source="com.dead10cc.StockMarketServer" target="com.dead10cc.Client">
-      <point x="-133.60000000000002" y="-96.5" />
-      <point x="436.8989583333333" y="541.0" />
-      <point x="160.0" y="541.0" />
-      <point x="0.0" y="131.0" />
-    </edge>
-    <edge source="com.dead10cc.StockMarketServer" target="com.dead10cc.Monitor">
-      <point x="133.60000000000002" y="-96.5" />
-      <point x="704.0989583333334" y="541.0" />
-      <point x="860.6506944444445" y="541.0" />
-      <point x="0.0" y="49.5" />
-    </edge>
-    <edge source="com.dead10cc.StockMarketServer" target="com.dead10cc.Demand">
-      <point x="-66.80000000000007" y="-96.5" />
-      <point x="503.6989583333333" y="531.0" />
-      <point x="359.8184027777778" y="531.0" />
+    <edge source="com.dead10cc.Client" target="com.dead10cc.Seller">
+      <point x="106.07142857142856" y="-200.0" />
+      <point x="850.5357142857143" y="586.0" />
+      <point x="1051.6333333333334" y="586.0" />
+      <point x="1051.6333333333334" y="371.0" />
+      <point x="1048.25" y="371.0" />
       <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.dead10cc.Transaction" target="com.dead10cc.Buyer">
+      <point x="-37.000000000000114" y="-72.5" />
+      <point x="1099.1333333333332" y="321.0" />
+      <point x="869.45" y="321.0" />
+      <point x="113.20000000000005" y="26.5" />
+    </edge>
+    <edge source="com.dead10cc.Buyer" target="com.dead10cc.Share">
+      <point x="0.0" y="-26.5" />
+      <point x="756.25" y="172.0" />
+      <point x="576.0325617283951" y="172.0" />
+      <point x="11.777777777777771" y="61.0" />
     </edge>
     <edge source="com.dead10cc.StockMarketServer" target="com.dead10cc.Offer">
-      <point x="0.0" y="-96.5" />
+      <point x="101.66666666666663" y="-61.5" />
+      <point x="577.0416666666666" y="1076.0" />
+      <point x="952.875" y="1076.0" />
+      <point x="44.625" y="26.5" />
+    </edge>
+    <edge source="com.dead10cc.Client" target="com.dead10cc.Buyer">
+      <point x="11.78571428571422" y="-200.0" />
       <point x="0.0" y="26.5" />
     </edge>
-    <edge source="com.dead10cc.Demand" target="com.dead10cc.Proposal">
+    <edge source="com.dead10cc.Client" target="com.dead10cc.Transaction">
+      <point x="153.21428571428578" y="-200.0" />
+      <point x="897.6785714285716" y="606.0" />
+      <point x="1136.1333333333334" y="606.0" />
+      <point x="0.0" y="72.5" />
+    </edge>
+    <edge source="com.dead10cc.ConcurrentProposalList" target="com.dead10cc.Proposal">
+      <point x="0.0" y="-62.0" />
+      <point x="277.25" y="371.0" />
+      <point x="461.55" y="371.0" />
+      <point x="-59.19999999999999" y="49.5" />
+    </edge>
+    <edge source="com.dead10cc.StockMarketServer" target="com.dead10cc.Reporter">
+      <point x="-101.66666666666663" y="-61.5" />
+      <point x="373.70833333333337" y="1076.0" />
+      <point x="148.5" y="1076.0" />
+      <point x="49.5" y="61.5" />
+    </edge>
+    <edge source="com.dead10cc.Client" target="com.dead10cc.Share">
+      <point x="-106.07142857142861" y="-200.0" />
+      <point x="638.3928571428571" y="596.0" />
+      <point x="414.25" y="596.0" />
+      <point x="414.25" y="142.0" />
+      <point x="517.1436728395063" y="142.0" />
+      <point x="-47.111111111111086" y="61.0" />
+    </edge>
+    <edge source="com.dead10cc.Offer" target="com.dead10cc.Share">
       <point x="0.0" y="-26.5" />
-      <point x="359.8184027777778" y="387.0" />
-      <point x="388.99895833333335" y="387.0" />
-      <point x="-75.75" y="73.0" />
+      <point x="908.25" y="162.0" />
+      <point x="587.8103395061728" y="162.0" />
+      <point x="23.555555555555543" y="61.0" />
+    </edge>
+    <edge source="com.dead10cc.Offer" target="com.dead10cc.Seller">
+      <point x="23.799999999999955" y="-26.5" />
+      <point x="932.05" y="371.0" />
+      <point x="944.65" y="371.0" />
+      <point x="-103.60000000000002" y="26.5" />
+    </edge>
+    <edge source="com.dead10cc.Proposal" target="com.dead10cc.Share">
+      <point x="37.0" y="-49.5" />
+      <point x="557.75" y="172.0" />
+      <point x="564.2547839506174" y="172.0" />
+      <point x="0.0" y="61.0" />
+    </edge>
+    <edge source="com.dead10cc.Demand" target="com.dead10cc.Buyer">
+      <point x="24.19999999999999" y="-26.5" />
+      <point x="544.95" y="361.0" />
+      <point x="643.05" y="361.0" />
+      <point x="-113.19999999999999" y="26.5" />
+    </edge>
+    <edge source="com.dead10cc.StockMarketServer" target="com.dead10cc.ConcurrentProposalList">
+      <point x="-33.888888888888914" y="-61.5" />
+      <point x="441.4861111111111" y="1056.0" />
+      <point x="219.5" y="1056.0" />
+      <point x="219.5" y="616.0" />
+      <point x="245.625" y="616.0" />
+      <point x="-31.625" y="62.0" />
+    </edge>
+    <edge source="com.dead10cc.Offer" target="com.dead10cc.Proposal">
+      <point x="-23.799999999999955" y="-26.5" />
+      <point x="884.45" y="341.0" />
+      <point x="579.95" y="341.0" />
+      <point x="59.19999999999999" y="49.5" />
+    </edge>
+    <edge source="com.dead10cc.Transaction" target="com.dead10cc.Seller">
+      <point x="12.333333333333258" y="-72.5" />
+      <point x="1148.4666666666667" y="371.0" />
+      <point x="1151.85" y="371.0" />
+      <point x="103.60000000000002" y="26.5" />
+    </edge>
+    <edge source="com.dead10cc.Client" target="com.dead10cc.Demand">
+      <point x="-58.928571428571445" y="-200.0" />
+      <point x="685.5357142857143" y="576.0" />
+      <point x="505.625" y="576.0" />
+      <point x="-15.125" y="26.5" />
+    </edge>
+    <edge source="com.dead10cc.Main" target="com.dead10cc.StockMarketServer">
+      <point x="-43.0" y="-26.5" />
+      <point x="432.375" y="1254.0" />
+      <point x="399.125" y="1254.0" />
+      <point x="-76.25" y="61.5" />
+    </edge>
+    <edge source="com.dead10cc.Client" target="com.dead10cc.ConcurrentProposalList">
+      <point x="-129.64285714285717" y="-200.0" />
+      <point x="614.8214285714287" y="606.0" />
+      <point x="372.125" y="606.0" />
+      <point x="94.875" y="62.0" />
+    </edge>
+    <edge source="com.dead10cc.StockMarketServer" target="com.dead10cc.Demand">
+      <point x="0.0" y="-61.5" />
+      <point x="-45.375" y="26.5" />
     </edge>
     <edge source="com.dead10cc.Demand" target="com.dead10cc.Share">
-      <point x="-67.0" y="-26.5" />
-      <point x="292.8184027777778" y="387.0" />
-      <point x="330.5" y="387.0" />
-      <point x="330.5" y="70.0" />
-      <point x="453.5475694444445" y="70.0" />
-      <point x="-15.1875" y="15.0" />
+      <point x="-48.400000000000034" y="-26.5" />
+      <point x="472.34999999999997" y="361.0" />
+      <point x="436.25" y="361.0" />
+      <point x="436.25" y="162.0" />
+      <point x="540.6992283950617" y="162.0" />
+      <point x="-23.555555555555543" y="61.0" />
+    </edge>
+    <edge source="com.dead10cc.StockMarketServer" target="com.dead10cc.Transaction">
+      <point x="135.55555555555554" y="-61.5" />
+      <point x="610.9305555555555" y="1086.0" />
+      <point x="1138.868268665491" y="1086.0" />
+      <point x="1138.868268665491" y="616.0" />
+      <point x="1185.4666666666667" y="616.0" />
+      <point x="49.333333333333314" y="72.5" />
+    </edge>
+    <edge source="com.dead10cc.StockMarketServer" target="com.dead10cc.Client">
+      <point x="33.888888888888914" y="-61.5" />
+      <point x="509.2638888888889" y="1056.0" />
+      <point x="661.9642857142858" y="1056.0" />
+      <point x="-82.5" y="200.0" />
+    </edge>
+    <edge source="com.dead10cc.Demand" target="com.dead10cc.Proposal">
+      <point x="-24.200000000000045" y="-26.5" />
+      <point x="496.54999999999995" y="371.0" />
+      <point x="491.15" y="371.0" />
+      <point x="-29.600000000000023" y="49.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.900516795865633" x="478.0" y="377.0" />
-  <SelectedNodes>
-    <node>com.dead10cc.Monitor</node>
-    <node>com.dead10cc.Transaction</node>
-    <node>com.dead10cc.Offer</node>
-    <node>com.dead10cc.Client</node>
-    <node>com.dead10cc.Proposal</node>
-    <node>com.dead10cc.Demand</node>
-    <node>com.dead10cc.Share</node>
-    <node>com.dead10cc.StockMarketServer</node>
-  </SelectedNodes>
+  <settings layout="Hierarchic Group" zoom="1.0" x="329.5" y="305.0" />
+  <SelectedNodes />
   <Categories>
     <Category>Fields</Category>
-    <Category>Constructors</Category>
     <Category>Methods</Category>
-    <Category>Inner Classes</Category>
     <Category>Properties</Category>
   </Categories>
   <SCOPE>All</SCOPE>

@@ -8,8 +8,6 @@ class StockMarketServer {
 
     private final ArrayList<Thread> threadList = new ArrayList<>();
     private ArrayList<Transaction> transactionHistory;
-    private HashSet<String> companies; //will be queried by Clients
-
 
     StockMarketServer(int numberOfClients) {
         // here we will add the reporter and the clients
@@ -30,7 +28,6 @@ class StockMarketServer {
 
     void startSimulation() {
         // run all threads
-        // check offerList and demandList and if matches are found, make transactions
         // wait for them to finish
         for (Thread t : threadList) {
             t.start();
