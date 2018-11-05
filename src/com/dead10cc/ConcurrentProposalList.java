@@ -13,23 +13,22 @@ class ConcurrentProposalList<T extends Proposal> {
     private final CopyOnWriteArrayList<T> myList;
     private final List<T> unmodifiableList;
 
-    public ConcurrentProposalList(CopyOnWriteArrayList<T> set) {
+    ConcurrentProposalList(CopyOnWriteArrayList<T> set) {
         myList = set;
         unmodifiableList = Collections.unmodifiableList(myList);
     }
 
-    public synchronized void add(T p) {
+    synchronized void add(T p) {
         myList.add(p);
     }
 
-    public List<T> getProposalList() {
+    List<T> getProposalList() {
         return unmodifiableList;
     }
 
-    public synchronized T remove(Proposal proposal){
+    synchronized void remove(Proposal proposal){
         for (T p : myList) {
             if (p.equals(proposal)) myList.remove(p);
         }
-        return null;
     }
 }

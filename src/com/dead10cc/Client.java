@@ -17,13 +17,14 @@ class Client implements Runnable, Seller, Buyer {
     // References to the shared lists of proposals
     private final ConcurrentProposalList<Offer> offerList;
     private final ConcurrentProposalList<Demand> demandList;
-    //todo: similarly, create reference to shared history list (thread safe class also needs to be implemented?)
+    private final ConcurrentProposalList<Transaction> transactionHistory;
 
-    Client(ConcurrentProposalList<Offer> offerList, ConcurrentProposalList<Demand> demandList) {
+    Client(ConcurrentProposalList<Offer> offerList, ConcurrentProposalList<Demand> demandList, ConcurrentProposalList<Transaction> transactionHistory) {
         this.shareInventory = new HashMap<>();
         this.wallet = 0;
         this.offerList = offerList;
         this.demandList = demandList;
+        this.transactionHistory = transactionHistory;
 
         // Generate ID here
         this.id = String.valueOf(counter);
@@ -115,8 +116,8 @@ class Client implements Runnable, Seller, Buyer {
         // the other party gains money
         o.getSeller().increaseWalletBalanceBy(o.getPrice() * o.getAmount());
 
-        Transaction t = new Transaction(this, o.getShareType(), o.getPrice(), o.getAmount(), o.getSeller());
-        //todo: add t to shared transaction history list
+        Transaction t = new Transaction(this, o.getPrice(), o.getShareType(), o.getAmount(), o.getSeller());
+        transactionHistory.add(t);
     }
 
     /**
@@ -133,7 +134,7 @@ class Client implements Runnable, Seller, Buyer {
         // the other party gains shares
         d.getBuyer().addSharesToInventory(d.getShareType(), d.getAmount());
 
-        Transaction t = new Transaction(d.getBuyer(), d.getShareType(), d.getPrice(), d.getAmount(), this);
-        //todo: add t to shared transaction history list
+        Transaction t = new Transaction(d.getBuyer(), d.getPrice(), d.getShareType(), d.getAmount(), this);
+        transactionHistory.add(t);
     }
 }

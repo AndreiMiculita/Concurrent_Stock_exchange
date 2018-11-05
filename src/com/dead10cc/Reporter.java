@@ -6,6 +6,11 @@ package com.dead10cc;
 class Reporter implements Runnable {
 
     private boolean reporterActive;
+    private final ConcurrentProposalList<Transaction> transactionHistory;
+
+    Reporter(ConcurrentProposalList<Transaction> transactionHistory) {
+        this.transactionHistory = transactionHistory;
+    }
 
     private void writeToFile() {
 
