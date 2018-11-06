@@ -6,6 +6,7 @@ import java.util.Random;
 
 /**
  * The Client is a thread representing an actor on the stock exchange, who can buy and sell shares.
+ * The 2 interfaces ensure that whoever accepts their transaction offer can only *give* them money or shares
  */
 class Client implements Runnable, Seller, Buyer {
     private static int counter; //counts the number of instances
@@ -43,11 +44,25 @@ class Client implements Runnable, Seller, Buyer {
         List<Offer> unmodifiableOfferList = offerList.getProposalList();
         List<Demand> unmodifiableDemandList = demandList.getProposalList();
 
+        //TODO: maybe randomize this? so it works with any number of ids
+        switch (id) {
+            case "0":
+                addSharesToInventory(Share.GOOGLE, 200);
+                increaseWalletBalanceBy(300);
+            case "1":
+                addSharesToInventory(Share.FACEBOOK, 200);
+                increaseWalletBalanceBy(300);
+            case "2":
+                addSharesToInventory(Share.MICROSOFT, 200);
+                increaseWalletBalanceBy(300);
+        }
+
         // TODO: this will run until the client runs out of money or decides to quit (by small random chance)
         while (wantsToTrade) {
             //read history
             //parse the unmodifiable lists
             //decide trade
+
             System.out.println("client " + id + " is alive and wants to trade");
             Random r = new Random();
             if (r.nextInt(1000)==1){
@@ -64,12 +79,12 @@ class Client implements Runnable, Seller, Buyer {
     }
 
     private void decreaseWalletBalanceBy(int amount) {
-        if (wallet - amount < 0) {
+        if (wallet - amount >= 0) {
+            wallet -= amount;
+        } else {
             //here the client is out of money
             wallet = 0;
             wantsToTrade = false;
-        } else {
-            wallet -= amount;
         }
     }
 
