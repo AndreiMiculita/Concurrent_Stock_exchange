@@ -12,7 +12,7 @@ class Client implements Runnable, Seller, Buyer {
     private static int counter; //counts the number of instances
     private final String id;
     private final HashMap<Share, Integer> shareInventory;
-    private int wallet;
+    private int walletBalance;
     private boolean wantsToTrade;
 
     // References to the shared lists of proposals
@@ -22,7 +22,7 @@ class Client implements Runnable, Seller, Buyer {
 
     Client(ConcurrentTransactionList<Offer> offerList, ConcurrentTransactionList<Demand> demandList, ConcurrentTransactionList<CompletedTransaction> transactionHistory) {
         this.shareInventory = new HashMap<>();
-        this.wallet = 0;
+        this.walletBalance = 0;
         this.offerList = offerList;
         this.demandList = demandList;
         this.transactionHistory = transactionHistory;
@@ -38,24 +38,12 @@ class Client implements Runnable, Seller, Buyer {
 
     @Override
     public void run() {
+        generateInventory();
         wantsToTrade = true;
 
         //read offerList and demandList
         List<Offer> unmodifiableOfferList = offerList.getProposalList();
         List<Demand> unmodifiableDemandList = demandList.getProposalList();
-
-        //TODO: maybe randomize this? so it works with any number of ids
-        switch (id) {
-            case "0":
-                addSharesToInventory(Share.GOOGLE, 200);
-                increaseWalletBalanceBy(300);
-            case "1":
-                addSharesToInventory(Share.FACEBOOK, 200);
-                increaseWalletBalanceBy(300);
-            case "2":
-                addSharesToInventory(Share.MICROSOFT, 200);
-                increaseWalletBalanceBy(300);
-        }
 
         // TODO: this will run until the client runs out of money or decides to quit (by small random chance)
         while (wantsToTrade) {
@@ -65,25 +53,49 @@ class Client implements Runnable, Seller, Buyer {
 
             System.out.println("client " + id + " is alive and wants to trade");
             Random r = new Random();
-            if (r.nextInt(1000)==1){
+            if (r.nextInt(5000) == 1) {
                 wantsToTrade = false;
             }
         }
-        System.out.println("client " + id + "ran out of money or decided to quit, with share inventory" + shareInventory);
+        System.out.println("client " + id + "ran out of money or decided to quit, with share inventory" +
+                shareInventory + " and wallet balance " + walletBalance);
     }
 
+    /**
+     * randomized inventory generation for this client
+     */
+    private void generateInventory() {
+        Random invGenRandom = new Random();
+        int iterations = invGenRandom.nextInt(9) + 1;
+        for (int i = 0; i < iterations; i++) {
+            addSharesToInventory(Share.values()[invGenRandom.nextInt(Share.values().length)], (invGenRandom.nextInt(4) + 1) * 100);
+            increaseWalletBalanceBy((invGenRandom.nextInt(4) + 1) * 100);
+        }
+    }
+
+    /**
+     * Increase wallet balance by
+     *
+     * @param amount positive amount
+     */
     @Override
     public void increaseWalletBalanceBy(int amount) {
         if (amount > 0)
-            wallet += amount;
+            walletBalance += amount;
     }
 
+    /**
+     * May empty wallet - then it will stop the client from trading
+     * Decrease wallet balance by
+     *
+     * @param amount positive amount
+     */
     private void decreaseWalletBalanceBy(int amount) {
-        if (wallet - amount >= 0) {
-            wallet -= amount;
+        if (walletBalance - amount >= 0) {
+            walletBalance -= amount;
         } else {
             //here the client is out of money
-            wallet = 0;
+            walletBalance = 0;
             wantsToTrade = false;
         }
     }
@@ -101,9 +113,10 @@ class Client implements Runnable, Seller, Buyer {
 
     /**
      * Offer to sell for
-     * @param price, offers of
+     *
+     * @param price,     offers of
      * @param shareType, and
-     * @param amount amount
+     * @param amount     amount
      */
     public void proposeOffer(int price, Share shareType, int amount) {
         Offer o = new Offer(this, price, shareType, amount);
@@ -118,13 +131,12 @@ class Client implements Runnable, Seller, Buyer {
     }
 
     /**
-     *
      * @param o Buy shares from a seller
      */
     public void buy(Offer o) {
 
         // this loses money and gains shares
-        decreaseWalletBalanceBy( o.getPrice() * o.getAmount());
+        decreaseWalletBalanceBy(o.getPrice() * o.getAmount());
         addSharesToInventory(o.getShareType(), o.getAmount());
         offerList.remove(o);
 
@@ -136,7 +148,6 @@ class Client implements Runnable, Seller, Buyer {
     }
 
     /**
-     *
      * @param d Sell shares to a buyer
      */
     public void sell(Demand d) {
