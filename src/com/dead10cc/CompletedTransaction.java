@@ -13,6 +13,15 @@ class CompletedTransaction extends Transaction {
         this.sellerId = seller.getId();
     }
 
+    @Override
+    public String toString() {
+        String s = super.toString();
+        return s + "CompletedTransaction{" +
+                "buyerId='" + buyerId + '\'' +
+                ", sellerId='" + sellerId + '\'' +
+                '}';
+    }
+
     public String getSellerId() {
         return sellerId;
     }

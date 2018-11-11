@@ -8,6 +8,15 @@ abstract class Transaction {
     private final Share shareType;
     private final int amount;
 
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "price=" + price +
+                ", shareType=" + shareType +
+                ", amount=" + amount +
+                '}';
+    }
+
     Transaction(int price, Share shareType, int amount) {
         this.price = price;
         this.shareType = shareType;

@@ -18,12 +18,12 @@ class ConcurrentTransactionList<T extends Transaction> {
         unmodifiableList = Collections.unmodifiableList(myList);
     }
 
-    synchronized void add(T p) {
-        myList.add(p);
+    List<T> getTransactionList() {
+        return unmodifiableList;
     }
 
-    List<T> getProposalList() {
-        return unmodifiableList;
+    synchronized void add(T p) {
+        myList.add(p);
     }
 
     synchronized void remove(Transaction transaction){

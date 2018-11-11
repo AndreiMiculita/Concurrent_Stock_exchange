@@ -1,8 +1,7 @@
 package com.dead10cc;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.Semaphore;
 
 /**
  * The Client is a thread representing an actor on the stock exchange, who can buy and sell shares.
@@ -11,21 +10,21 @@ import java.util.Random;
 class Client implements Runnable, Seller, Buyer {
     private static int counter; //counts the number of instances
     private final String id;
+
+    private Semaphore shareInventorySemaphore = new Semaphore(1, true);
     private final HashMap<Share, Integer> shareInventory;
     private int walletBalance;
     private boolean wantsToTrade;
 
-    // References to the shared lists of proposals
-    private final ConcurrentTransactionList<Offer> offerList;
-    private final ConcurrentTransactionList<Demand> demandList;
-    private final ConcurrentTransactionList<CompletedTransaction> transactionHistory;
+    //Reference to server
+    StockMarketServer server;
+    private List<Offer> unmodifiableOfferList;
+    private List<Demand> unmodifiableDemandList;
 
-    Client(ConcurrentTransactionList<Offer> offerList, ConcurrentTransactionList<Demand> demandList, ConcurrentTransactionList<CompletedTransaction> transactionHistory) {
+    Client(StockMarketServer server) {
+        this.server = server;
         this.shareInventory = new HashMap<>();
         this.walletBalance = 0;
-        this.offerList = offerList;
-        this.demandList = demandList;
-        this.transactionHistory = transactionHistory;
 
         // Generate ID here
         this.id = String.valueOf(counter);
@@ -40,25 +39,58 @@ class Client implements Runnable, Seller, Buyer {
     public void run() {
         generateInventory();
         wantsToTrade = true;
-
-        //read offerList and demandList
-        List<Offer> unmodifiableOfferList = offerList.getProposalList();
-        List<Demand> unmodifiableDemandList = demandList.getProposalList();
+        refreshLists();
+        Random r = new Random();
 
         // TODO: this will run until the client runs out of money or decides to quit (by small random chance)
         while (wantsToTrade) {
             //read history
             //parse the unmodifiable lists
-            //decide trade
+            refreshLists();
 
-            System.out.println("client " + id + " is alive and wants to trade");
-            Random r = new Random();
+            if (!unmodifiableOfferList.isEmpty()) {
+                Iterator<Offer> offerIterator = unmodifiableOfferList.iterator();
+                while (offerIterator.hasNext()) {
+                    Offer o = offerIterator.next();
+                    if (r.nextInt(100) == 1 && walletBalance > o.getPrice() * o.getAmount() && !o.getSeller().getId().equals(this.getId())) {
+                        server.buy(o, this);
+                    }
+                }
+            }
+
+            if (!unmodifiableDemandList.isEmpty()) {
+                for (Demand d : unmodifiableDemandList) {
+                    if (r.nextInt(100) == 1 && shareInventory.containsKey(d.getShareType()) && shareInventory.get(d.getShareType()) > d.getAmount()) {
+                        server.sell(d, this);
+                        break;
+                    }
+                }
+            }
+
             if (r.nextInt(5000) == 1) {
+                //get random entry from shareInventory
+                List<Share> keyArray = new ArrayList<>(shareInventory.keySet());
+                Share randomKey = keyArray.get( r.nextInt(keyArray.size()) );
+
+                //Put all the shares up for sale
+                Offer offer = new Offer(this, r.nextInt(3) + 1, randomKey, shareInventory.get(randomKey));
+                server.proposeOffer(offer,this);
+            }
+
+
+            //System.out.println("client " + id + " is alive and wants to trade");
+            if (r.nextInt(10000) == 1) {
                 wantsToTrade = false;
             }
         }
         System.out.println("client " + id + "ran out of money or decided to quit, with share inventory" +
                 shareInventory + " and wallet balance " + walletBalance);
+    }
+
+    private void refreshLists() {
+        //read offerList and demandList
+        unmodifiableOfferList = server.getOfferList();
+        unmodifiableDemandList = server.getDemandList();
     }
 
     /**
@@ -79,7 +111,7 @@ class Client implements Runnable, Seller, Buyer {
      * @param amount positive amount
      */
     @Override
-    public void increaseWalletBalanceBy(int amount) {
+    public synchronized void increaseWalletBalanceBy(int amount) {
         if (amount > 0)
             walletBalance += amount;
     }
@@ -90,7 +122,7 @@ class Client implements Runnable, Seller, Buyer {
      *
      * @param amount positive amount
      */
-    private void decreaseWalletBalanceBy(int amount) {
+    synchronized void decreaseWalletBalanceBy(int amount) {
         if (walletBalance - amount >= 0) {
             walletBalance -= amount;
         } else {
@@ -102,12 +134,26 @@ class Client implements Runnable, Seller, Buyer {
 
     @Override
     public void addSharesToInventory(Share shareType, int amount) {
-        shareInventory.put(shareType, shareInventory.getOrDefault(shareType, 0) + amount);
+        try {
+            shareInventorySemaphore.acquire();
+            shareInventory.put(shareType, shareInventory.getOrDefault(shareType, 0) + amount);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            shareInventorySemaphore.release();
+        }
     }
 
-    private void removeSharesFromInventory(Share shareType, int amount) {
-        if (shareInventory.getOrDefault(shareType, 0) > amount) {
-            shareInventory.put(shareType, shareInventory.getOrDefault(shareType, 0) - amount);
+    void removeSharesFromInventory(Share shareType, int amount) {
+        try {
+            shareInventorySemaphore.acquire();
+            if (shareInventory.getOrDefault(shareType, 0) > amount) {
+                shareInventory.put(shareType, shareInventory.getOrDefault(shareType, 0) - amount);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            shareInventorySemaphore.release();
         }
     }
 
@@ -120,47 +166,25 @@ class Client implements Runnable, Seller, Buyer {
      */
     public void proposeOffer(int price, Share shareType, int amount) {
         Offer o = new Offer(this, price, shareType, amount);
-        offerList.add(o);
-        removeSharesFromInventory(shareType, amount); //remove the shares, since they are up for sale
+        server.proposeOffer(o, this);
     }
 
     public void proposeDemand(int price, Share shareType, int amount) {
         Demand d = new Demand(this, price, shareType, amount);
-        demandList.add(d);
-        decreaseWalletBalanceBy(price * amount);
+        server.proposeDemand(d, this);
     }
 
     /**
      * @param o Buy shares from a seller
      */
     public void buy(Offer o) {
-
-        // this loses money and gains shares
-        decreaseWalletBalanceBy(o.getPrice() * o.getAmount());
-        addSharesToInventory(o.getShareType(), o.getAmount());
-        offerList.remove(o);
-
-        // the other party gains money
-        o.getSeller().increaseWalletBalanceBy(o.getPrice() * o.getAmount());
-
-        CompletedTransaction t = new CompletedTransaction(this, o.getPrice(), o.getShareType(), o.getAmount(), o.getSeller());
-        transactionHistory.add(t);
+        server.buy(o, this);
     }
 
     /**
      * @param d Sell shares to a buyer
      */
     public void sell(Demand d) {
-
-        // this gains money and loses shares
-        increaseWalletBalanceBy(d.getPrice() * d.getAmount());
-        removeSharesFromInventory(d.getShareType(), d.getAmount());
-        demandList.remove(d);
-
-        // the other party gains shares
-        d.getBuyer().addSharesToInventory(d.getShareType(), d.getAmount());
-
-        CompletedTransaction t = new CompletedTransaction(d.getBuyer(), d.getPrice(), d.getShareType(), d.getAmount(), this);
-        transactionHistory.add(t);
+        server.sell(d, this);
     }
 }
