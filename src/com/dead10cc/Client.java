@@ -11,13 +11,13 @@ class Client implements Runnable, Seller, Buyer {
     private static int counter; //counts the number of instances
     private final String id;
 
-    private Semaphore shareInventorySemaphore = new Semaphore(1, true);
+    private final Semaphore shareInventorySemaphore = new Semaphore(1, true);
     private final HashMap<Share, Integer> shareInventory;
     private int walletBalance;
     private boolean wantsToTrade;
 
     //Reference to server
-    StockMarketServer server;
+    private final StockMarketServer server;
     private List<Offer> unmodifiableOfferList;
     private List<Demand> unmodifiableDemandList;
 
@@ -44,27 +44,37 @@ class Client implements Runnable, Seller, Buyer {
 
         // TODO: this will run until the client runs out of money or decides to quit (by small random chance)
         while (wantsToTrade) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             //read history
             //parse the unmodifiable lists
             refreshLists();
 
             if (!unmodifiableOfferList.isEmpty()) {
                 Iterator<Offer> offerIterator = unmodifiableOfferList.iterator();
+                Offer o = offerIterator.next();
                 while (offerIterator.hasNext()) {
-                    Offer o = offerIterator.next();
                     if (r.nextInt(100) == 1 && walletBalance > o.getPrice() * o.getAmount() && !o.getSeller().getId().equals(this.getId())) {
-                        server.buy(o, this);
-                    }
-                }
-            }
-
-            if (!unmodifiableDemandList.isEmpty()) {
-                for (Demand d : unmodifiableDemandList) {
-                    if (r.nextInt(100) == 1 && shareInventory.containsKey(d.getShareType()) && shareInventory.get(d.getShareType()) > d.getAmount()) {
-                        server.sell(d, this);
+                        o = offerIterator.next();
                         break;
                     }
                 }
+                server.buy(o, this);
+            }
+
+            if (!unmodifiableDemandList.isEmpty()) {
+                Iterator<Demand> demandIterator = unmodifiableDemandList.iterator();
+                Demand d = demandIterator.next();
+                while (demandIterator.hasNext()) {
+                    if (r.nextInt(100) == 1 && shareInventory.containsKey(d.getShareType()) && shareInventory.get(d.getShareType()) > d.getAmount()) {
+                        d = demandIterator.next();
+                        break;
+                    }
+                }
+                server.sell(d, this);
             }
 
             if (r.nextInt(5000) == 1) {
@@ -77,11 +87,9 @@ class Client implements Runnable, Seller, Buyer {
                 server.proposeOffer(offer,this);
             }
 
-
-            //System.out.println("client " + id + " is alive and wants to trade");
-            if (r.nextInt(10000) == 1) {
+            /*if (r.nextInt(10000) == 1) {
                 wantsToTrade = false;
-            }
+            }*/
         }
         System.out.println("client " + id + "ran out of money or decided to quit, with share inventory" +
                 shareInventory + " and wallet balance " + walletBalance);
@@ -103,6 +111,7 @@ class Client implements Runnable, Seller, Buyer {
             addSharesToInventory(Share.values()[invGenRandom.nextInt(Share.values().length)], (invGenRandom.nextInt(4) + 1) * 100);
             increaseWalletBalanceBy((invGenRandom.nextInt(4) + 1) * 100);
         }
+        System.out.println("Client " + getId() + " started with inventory " + shareInventory + " and wallet balance " + walletBalance);
     }
 
     /**
@@ -128,7 +137,9 @@ class Client implements Runnable, Seller, Buyer {
         } else {
             //here the client is out of money
             walletBalance = 0;
-            wantsToTrade = false;
+            if (shareInventory.isEmpty()){
+                wantsToTrade = false;
+                }
         }
     }
 

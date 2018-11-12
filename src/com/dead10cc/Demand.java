@@ -7,6 +7,14 @@ class Demand extends Transaction {
         super(price, shareType, amount);
         this.buyer = buyer;
     }
+
+    @Override
+    public String toString() {
+        return "Demand{" +
+                "buyer=" + buyer.getId() +
+                '}' + super.toString();
+    }
+
     Buyer getBuyer() {
         return buyer;
     }

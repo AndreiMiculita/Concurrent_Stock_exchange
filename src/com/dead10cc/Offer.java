@@ -7,6 +7,14 @@ class Offer extends Transaction {
         super(price, shareType, amount);
         this.seller = seller;
     }
+
+    @Override
+    public String toString() {
+        return "Offer{" +
+                "seller=" + seller.getId() +
+                '}' + super.toString();
+    }
+
     Seller getSeller(){
         return seller;
     }

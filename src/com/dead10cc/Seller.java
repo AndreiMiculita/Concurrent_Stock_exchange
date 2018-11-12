@@ -1,6 +1,6 @@
 package com.dead10cc;
 
-public interface Seller {
+interface Seller {
     void increaseWalletBalanceBy(int amount);
     String getId();
 }

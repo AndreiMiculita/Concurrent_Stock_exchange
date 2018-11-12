@@ -9,13 +9,13 @@ class StockMarketServer {
 
     private final ArrayList<Thread> threadList = new ArrayList<>();
 
-    private Semaphore offerSemaphore = new Semaphore(1, true);
-    private ArrayList<Offer> offerList = new ArrayList<>();
-    private Semaphore demandSemaphore = new Semaphore(1, true);
-    private ArrayList<Demand> demandList = new ArrayList<>();
+    private final Semaphore offerSemaphore = new Semaphore(1, true);
+    private final ArrayList<Offer> offerList = new ArrayList<>();
+    private final Semaphore demandSemaphore = new Semaphore(1, true);
+    private final ArrayList<Demand> demandList = new ArrayList<>();
 
-    private Semaphore historySemaphore = new Semaphore(1, true);
-    private ArrayList<CompletedTransaction> transactionHistory = new ArrayList<>();
+    private final Semaphore historySemaphore = new Semaphore(1, true);
+    private final ArrayList<CompletedTransaction> transactionHistory = new ArrayList<>();
 
     StockMarketServer(int numberOfClients) {
 
@@ -23,13 +23,12 @@ class StockMarketServer {
         ArrayList<Client> clientList = new ArrayList<>();
         for (int i = 0; i < numberOfClients; i++) {
             clientList.add(new Client(this));
-            System.out.println("client is alive and wants to trade");
         }
         Reporter reporter = new Reporter(transactionHistory);
         threadList.add(new Thread(reporter));
         for (Client c : clientList) {
             threadList.add(new Thread(c));
-            System.out.println("client is alive and wants to trade");
+            System.out.println("client " + c.getId() + " is alive and wants to trade");
         }
     }
 
@@ -48,7 +47,7 @@ class StockMarketServer {
         }
     }
 
-    public void proposeOffer(Offer offer, Client client) {
+    void proposeOffer(Offer offer, Client client) {
 
         try {
             offerSemaphore.acquire();
@@ -58,11 +57,11 @@ class StockMarketServer {
         } finally {
             offerSemaphore.release();
         }
-
+        System.out.println(offer);
         client.removeSharesFromInventory(offer.getShareType(), offer.getAmount()); //remove the shares, since they are up for sale
     }
 
-    public void proposeDemand(Demand demand, Client client) {
+    void proposeDemand(Demand demand, Client client) {
 
         try {
             demandSemaphore.acquire();
@@ -72,13 +71,13 @@ class StockMarketServer {
         } finally {
             demandSemaphore.release();
         }
-
+        System.out.println(demand);
         client.decreaseWalletBalanceBy(demand.getPrice() * demand.getAmount());
     }
 
-    public void buy (Offer offer, Client client) {
+    void buy(Offer offer, Client client) {
 
-        // this loses money and gains shares
+        // client loses money and gains shares
         client.decreaseWalletBalanceBy(offer.getPrice() * offer.getAmount());
         client.addSharesToInventory(offer.getShareType(), offer.getAmount());
 
@@ -99,9 +98,9 @@ class StockMarketServer {
         this.addToHistory(t);
     }
 
-    public void sell (Demand demand, Client client){
+    void sell(Demand demand, Client client){
 
-        // this gains money and loses shares
+        // client gains money and loses shares
         client.increaseWalletBalanceBy(demand.getPrice() * demand.getAmount());
         client.removeSharesFromInventory(demand.getShareType(), demand.getAmount());
 
@@ -118,7 +117,6 @@ class StockMarketServer {
         demand.getBuyer().addSharesToInventory(demand.getShareType(), demand.getAmount());
 
         CompletedTransaction t = new CompletedTransaction(demand.getBuyer(), demand.getPrice(), demand.getShareType(), demand.getAmount(), client);
-        System.out.println("transaction made: ");
         System.out.println(t);
         this.addToHistory(t);
     }
@@ -134,11 +132,11 @@ class StockMarketServer {
         }
     }
 
-    public List<Offer> getOfferList(){
+    List<Offer> getOfferList(){
         return Collections.unmodifiableList(offerList);
     }
 
-    public List<Demand> getDemandList() {
+    List<Demand> getDemandList() {
         return Collections.unmodifiableList(demandList);
     }
 }
